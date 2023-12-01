@@ -1,3 +1,27 @@
+autom4te.cache/
+include/clixon_config.h
+config.log
+config.status
+Makefile
+TAGS
+clixon_util_datastore
+clixon_util_dispatcher
+clixon_util_grpc
+clixon_util_insert
+clixon_util_json
+clixon_util_path
+clixon_util_regexp
+clixon_util_socket
+clixon_util_stream
+clixon_util_validate
+clixon_util_xml
+clixon_util_xml_mod
+clixon_util_xpath
+clixon_util_yang
+clixon_netconf_ssh_callhome
+clixon_netconf_ssh_callhome_client
+clixon_restconf_callhome_client
+
 # Prerequisites
 *.d
 
@@ -50,3 +74,4 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+

@@ -1,0 +1,93 @@
+/* include/clixon_config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Pass-through $bindir */
+#undef CLIXON_CONFIG_BINDIR
+
+/* Pass-through $localstatedir */
+#undef CLIXON_CONFIG_LOCALSTATEDIR
+
+/* Pass-through $sbindir */
+#undef CLIXON_CONFIG_SBINDIR
+
+/* Pass-through $sysconfdir */
+#undef CLIXON_CONFIG_SYSCONFDIR
+
+/* Location for apps to find default config file */
+#undef CLIXON_DEFAULT_CONFIG
+
+/* Define to 1 if you have the <cligen/cligen.h> header file. */
+#undef HAVE_CLIGEN_CLIGEN_H
+
+/* Define to 1 if you have the <clixon/clixon.h> header file. */
+#undef HAVE_CLIXON_CLIXON_H
+
+/* Define to 1 if you have the <curl/curl.h> header file. */
+#undef HAVE_CURL_CURL_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `cligen' library (-lcligen). */
+#undef HAVE_LIBCLIGEN
+
+/* Define to 1 if you have the `clixon' library (-lclixon). */
+#undef HAVE_LIBCLIXON
+
+/* Define to 1 if you have the `curl' library (-lcurl). */
+#undef HAVE_LIBCURL
+
+/* Define to 1 if you have the `xml2' library (-lxml2). */
+#undef HAVE_LIBXML2
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* SSHD binary */
+#undef SSHD_BIN
+
+/* SSH binary */
+#undef SSH_BIN
+
+/* Define to 1 if all of the C90 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
+#undef STDC_HEADERS
