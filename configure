@@ -4571,6 +4571,155 @@ then :
 fi
 
 
+       for ac_header in nghttp2/nghttp2.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "nghttp2/nghttp2.h" "ac_cv_header_nghttp2_nghttp2_h" "$ac_includes_default"
+if test "x$ac_cv_header_nghttp2_nghttp2_h" = xyes
+then :
+  printf "%s\n" "#define HAVE_NGHTTP2_NGHTTP2_H 1" >>confdefs.h
+
+else $as_nop
+  as_fn_error $? "nghttp2 missing" "$LINENO" 5
+fi
+
+done
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for nghttp2_session_server_new in -lnghttp2" >&5
+printf %s "checking for nghttp2_session_server_new in -lnghttp2... " >&6; }
+if test ${ac_cv_lib_nghttp2_nghttp2_session_server_new+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lnghttp2  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char nghttp2_session_server_new ();
+int
+main (void)
+{
+return nghttp2_session_server_new ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_nghttp2_nghttp2_session_server_new=yes
+else $as_nop
+  ac_cv_lib_nghttp2_nghttp2_session_server_new=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_nghttp2_nghttp2_session_server_new" >&5
+printf "%s\n" "$ac_cv_lib_nghttp2_nghttp2_session_server_new" >&6; }
+if test "x$ac_cv_lib_nghttp2_nghttp2_session_server_new" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBNGHTTP2 1" >>confdefs.h
+
+  LIBS="-lnghttp2 $LIBS"
+
+else $as_nop
+  as_fn_error $? "nghttp2 missing" "$LINENO" 5
+fi
+
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for OPENSSL_init_ssl  in -lssl" >&5
+printf %s "checking for OPENSSL_init_ssl  in -lssl... " >&6; }
+if test ${ac_cv_lib_ssl_OPENSSL_init_ssl_+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lssl  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char OPENSSL_init_ssl  ();
+int
+main (void)
+{
+return OPENSSL_init_ssl  ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_ssl_OPENSSL_init_ssl_=yes
+else $as_nop
+  ac_cv_lib_ssl_OPENSSL_init_ssl_=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ssl_OPENSSL_init_ssl_" >&5
+printf "%s\n" "$ac_cv_lib_ssl_OPENSSL_init_ssl_" >&6; }
+if test "x$ac_cv_lib_ssl_OPENSSL_init_ssl_" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBSSL 1" >>confdefs.h
+
+  LIBS="-lssl $LIBS"
+
+else $as_nop
+  as_fn_error $? "libssl missing" "$LINENO" 5
+fi
+
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for CRYPTO_new_ex_data in -lcrypto" >&5
+printf %s "checking for CRYPTO_new_ex_data in -lcrypto... " >&6; }
+if test ${ac_cv_lib_crypto_CRYPTO_new_ex_data+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcrypto  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+char CRYPTO_new_ex_data ();
+int
+main (void)
+{
+return CRYPTO_new_ex_data ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"
+then :
+  ac_cv_lib_crypto_CRYPTO_new_ex_data=yes
+else $as_nop
+  ac_cv_lib_crypto_CRYPTO_new_ex_data=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_CRYPTO_new_ex_data" >&5
+printf "%s\n" "$ac_cv_lib_crypto_CRYPTO_new_ex_data" >&6; }
+if test "x$ac_cv_lib_crypto_CRYPTO_new_ex_data" = xyes
+then :
+  printf "%s\n" "#define HAVE_LIBCRYPTO 1" >>confdefs.h
+
+  LIBS="-lcrypto $LIBS"
+
+else $as_nop
+  as_fn_error $? "libcrypto missing" "$LINENO" 5
+fi
+
+
        for ac_header in cligen/cligen.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "cligen/cligen.h" "ac_cv_header_cligen_cligen_h" "$ac_includes_default"
