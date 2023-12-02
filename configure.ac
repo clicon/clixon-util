@@ -99,7 +99,6 @@ AC_MSG_RESULT(CFLAGS is $CFLAGS)
 AC_MSG_RESULT(LDFLAGS is $LDFLAGS)
 AC_MSG_RESULT(INSTALLFLAGS is $INSTALLFLAGS)	
 
-
 # SSH binary path for client and test
 AC_PATH_PROG(SSH_BIN, ssh)
 AC_DEFINE_UNQUOTED(SSH_BIN, "${SSH_BIN}", [SSH binary])
@@ -119,6 +118,26 @@ LIBDIR=`eval echo \`eval echo $libdir\``
 LIBEXECDIR=`eval echo $libexecdir`
 LOCALSTATEDIR=`eval echo $localstatedir`
 
+# This is for cligen
+AC_ARG_WITH([cligen], [AS_HELP_STRING([--with-cligen=dir], [Use CLIGEN installation in this dir])], [
+  CLIGEN_DIR="$withval"
+])
+AC_SUBST(CLIGEN_DIR)
+if test -n "${CLIGEN_DIR}" -a -d "${CLIGEN_DIR}"; then
+    echo "Using CLIGEN here: ${CLIGEN_DIR}"
+    CPPFLAGS="-I${CLIGEN_DIR}/include ${CPPFLAGS}"
+    LDFLAGS="-L${CLIGEN_DIR}/lib ${LDFLAGS}"
+fi
+
+# This is for clixon
+AC_ARG_WITH(clixon,  [  --with-clixon=dir       Use Clixon here ] )
+if test "${with_clixon}"; then
+   echo "Using Clixon here: ${with_clixon}"
+   CPPFLAGS="-I${with_clixon}/include ${CPPFLAGS}"
+   LDFLAGS="-L${with_clixon}/lib ${LDFLAGS}"
+   test -d "$with_clixon" && CLIXON_PREFIX="$with_clixon"
+fi
+   
 # Check curl, needed for tests but not for clixon core
 AC_CHECK_HEADERS(curl/curl.h,[])
 AC_CHECK_LIB(curl, curl_global_init)
