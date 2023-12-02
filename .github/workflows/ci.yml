@@ -3,10 +3,10 @@ name: Clixon-util CI
 on:
   push:
     branches:
-       - master
+       - main
        - test-actions
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   schedule:
     - cron: '30 4 * * 6'     # Run every Saturday morning
 

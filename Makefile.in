@@ -45,13 +45,9 @@ sysconfdir	= @sysconfdir@
 HOST_VENDOR     = @host_vendor@
 LIBXML2_CFLAGS  = @LIBXML2_CFLAGS@
 
-SH_SUFFIX	= @SH_SUFFIX@
-
 VPATH       	= @srcdir@
 CC		= @CC@
 CFLAGS  	= @CFLAGS@
-INSTALL		= @INSTALL@
-INSTALL_LIB	= @INSTALL@
 
 ifeq ($(HOST_VENDOR),apple)
 INSTALLFLAGS =
@@ -62,7 +58,6 @@ endif
 LDFLAGS 	= @LDFLAGS@
 LIBS    	= @LIBS@
 CPPFLAGS  	= @CPPFLAGS@
-LINKAGE         = @LINKAGE@
 
 INCLUDES        = -I. -I$(top_srcdir)/include
 

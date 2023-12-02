@@ -107,6 +107,14 @@ AC_DEFINE_UNQUOTED(SSH_BIN, "${SSH_BIN}", [SSH binary])
 AC_PATH_PROG(SSHD_BIN, sshd)
 AC_DEFINE_UNQUOTED(SSHD_BIN, "${SSHD_BIN}", [SSHD binary])
 
+if test "$prefix" = "NONE"; then
+     prefix=${ac_default_prefix}
+fi
+
+if test "$exec_prefix" = "NONE"; then
+     exec_prefix=${prefix}
+fi
+
 # Expand for easy replacement in example/main/example.xml.in
 # Special case is $libdir, which is composed from $exec_prefix
 BINDIR=`eval echo $bindir`
@@ -182,7 +190,6 @@ AC_ARG_WITH([configfile],
 
 # Default location for config file
 AC_DEFINE_UNQUOTED(CLIXON_DEFAULT_CONFIG,"${CLIXON_DEFAULT_CONFIG}",[Location for apps to find default config file])
-
 
 AC_DEFINE_UNQUOTED(CLIXON_CONFIG_BINDIR, "${BINDIR}", [Pass-through $bindir])
 AC_DEFINE_UNQUOTED(CLIXON_CONFIG_LOCALSTATEDIR, "${LOCALSTATEDIR}", [Pass-through $localstatedir])
