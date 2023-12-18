@@ -123,7 +123,7 @@ stream_url_get(char  *url,
                  __FUNCTION__, url, start?start:"", stop?stop:"");
     /* Set up curl for doing the communication with the controller */
     if ((curl = curl_easy_init()) == NULL) {
-        clicon_err(OE_PLUGIN, errno, "curl_easy_init");
+        clixon_err(OE_PLUGIN, errno, "curl_easy_init");
         goto done;
     }
     if ((cbf = cbuf_new()) == NULL)
@@ -210,7 +210,8 @@ usage(char *argv0)
 }
 
 int
-main(int argc, char **argv)
+main(int    argc,
+     char **argv)
 {
     cbuf  *cb = cbuf_new();
     char  *url = NULL;
@@ -222,8 +223,11 @@ main(int argc, char **argv)
     char  *argv0 = argv[0];
     struct timeval now;
     int            dbg = 0;
+    clixon_handle  h;
 
-    clicon_log_init("xpath", LOG_DEBUG, CLICON_LOG_STDERR);
+    if ((h = clixon_handle_init()) == NULL)
+        goto done;
+    clixon_log_init(h, "xpath", LOG_DEBUG, CLIXON_LOG_STDERR);
     gettimeofday(&now, NULL);
     optind = 1;
     opterr = 0;
@@ -265,7 +269,7 @@ main(int argc, char **argv)
             usage(argv[0]);
             break;
         }
-    clixon_debug_init(dbg, NULL);
+    clixon_debug_init(h, dbg);
     if (url == NULL)
         usage(argv[0]);
     curl_global_init(0);

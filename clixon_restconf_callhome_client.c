@@ -213,7 +213,7 @@ read_data_file(FILE   *fe,
     int    ret;
 
     if ((buf = malloc(buflen)) == NULL){
-        clicon_err(OE_UNIX, errno, "malloc");
+        clixon_err(OE_UNIX, errno, "malloc");
         goto done;
     }
     memset(buf, 0, buflen);
@@ -221,7 +221,7 @@ read_data_file(FILE   *fe,
     rewind(fe);
     while (1){
         if ((ret = fread(&ch, 1, 1, fe)) < 0){
-            clicon_err(OE_JSON, errno, "fread");
+            clixon_err(OE_JSON, errno, "fread");
             goto done;
         }
         if (ret == 0)
@@ -286,7 +286,7 @@ tls_server_reply_cb(int   s,
     ssl = sd->sd_ssl;
     /* get reply & decrypt */
     if ((n = SSL_read(ssl, buf, sizeof(buf))) < 0){
-        clicon_err(OE_XML, errno, "SSL_read");
+        clixon_err(OE_XML, errno, "SSL_read");
         goto done;
     }
     clixon_debug(CLIXON_DBG_DEFAULT, "%s n:%d", __FUNCTION__, n);
@@ -367,7 +367,7 @@ tls_ssl_init_connect(SSL_CTX *ctx,
 
     /* create new SSL connection state */
     if ((ssl = SSL_new(ctx)) == NULL){
-        clicon_err(OE_SSL, 0, "SSL_new.");
+        clixon_err(OE_SSL, 0, "SSL_new.");
         goto done;
     }
     SSL_set_fd(ssl, s);    /* attach the socket descriptor */
@@ -376,7 +376,7 @@ tls_ssl_init_connect(SSL_CTX *ctx,
     protos[0] = 8;
     strncpy((char*)&protos[1], "http/1.1",  9);
     if ((retval = SSL_set_alpn_protos(ssl, protos, 9)) != 0){
-        clicon_err(OE_SSL, retval, "SSL_set_alpn_protos.");
+        clixon_err(OE_SSL, retval, "SSL_set_alpn_protos.");
         goto done;
     }
 #if 0
@@ -400,7 +400,7 @@ tls_ssl_init_connect(SSL_CTX *ctx,
             goto done;
             break;
         default:
-            clicon_err(OE_XML, errno, "SSL_connect");
+            clixon_err(OE_XML, errno, "SSL_connect");
             goto done;
             break;
         }
@@ -411,7 +411,7 @@ tls_ssl_init_connect(SSL_CTX *ctx,
     case X509_V_OK:
         break;
     default:
-        clicon_err(OE_SSL, errno, "verify problems: %d", verify);
+        clixon_err(OE_SSL, errno, "verify problems: %d", verify);
         goto done;
     }
     *sslp = ssl;
@@ -480,7 +480,7 @@ tls_server_accept_cb(int   ss,
         goto done;
     clixon_debug(CLIXON_DBG_DEFAULT, "connected");
     if ((sd = malloc(sizeof(*sd))) == NULL){
-        clicon_err(OE_UNIX, errno, "malloc");
+        clixon_err(OE_UNIX, errno, "malloc");
         goto done;
     }
     memset(sd, 0, sizeof(*sd));
@@ -541,22 +541,22 @@ tls_ctx_init(const char *cert_path,
     SSL_CTX *ctx = NULL;
 
     if ((ctx = SSL_CTX_new(TLS_client_method())) == NULL) {
-        clicon_err(OE_SSL, 0, "SSL_CTX_new");
+        clixon_err(OE_SSL, 0, "SSL_CTX_new");
         goto done;
     }
     SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, tls_auth_verify_callback);
     /* get peer certificate 
        nc_client_tls_update_opts */
     if (SSL_CTX_use_certificate_file(ctx, cert_path, SSL_FILETYPE_PEM) != 1) {
-        clicon_err(OE_SSL, 0, "SSL_CTX_use_certificate_file");
+        clixon_err(OE_SSL, 0, "SSL_CTX_use_certificate_file");
         goto done;
     }
     if (SSL_CTX_use_PrivateKey_file(ctx, key_path, SSL_FILETYPE_PEM) != 1) {
-        clicon_err(OE_SSL, 0, "SSL_CTX_use_PrivateKey_file");
+        clixon_err(OE_SSL, 0, "SSL_CTX_use_PrivateKey_file");
         goto done;
     }
     if (SSL_CTX_load_verify_locations(ctx, ca_cert_path, NULL) != 1) {
-        clicon_err(OE_SSL, 0, "SSL_CTX_load_verify_locations");
+        clixon_err(OE_SSL, 0, "SSL_CTX_load_verify_locations");
         goto done;
     }
     (void)SSL_CTX_set_next_proto_select_cb(ctx, tls_proto_select_cb, NULL);
@@ -596,7 +596,7 @@ main(int    argc,
      char **argv)
 {
     int                 retval = -1;
-    clicon_handle       h;
+    clixon_handle       h;
     int                 c;
     uint16_t            port = RESTCONF_CH_TLS;
     SSL_CTX            *ctx = NULL;
@@ -615,9 +615,10 @@ main(int    argc,
     char               *family = "inet:ipv4-address";
 
     /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init(__FILE__, LOG_INFO, CLICON_LOG_STDERR);
-    if ((h = clicon_handle_init()) == NULL)
+    if ((h = clixon_handle_init()) == NULL)
         goto done;
+    clixon_log_init(h, __FILE__, LOG_INFO, CLIXON_LOG_STDERR);
+
     while ((c = getopt(argc, argv, UTIL_TLS_OPTS)) != -1)
         switch (c) {
         case 'h':
@@ -689,11 +690,11 @@ main(int    argc,
         fprintf(stderr, "-c <cert path> and -k <key path> -C <ca-cert> are mandatory\n");
         usage(argv[0]);
     }
-    clixon_debug_init(dbg, NULL);
+    clixon_debug_init(h, dbg);
 
     if (input_filename){
         if ((_input_file = fopen(input_filename, "r")) == NULL){
-            clicon_err(OE_YANG, errno, "open(%s)", input_filename);
+            clixon_err(OE_YANG, errno, "open(%s)", input_filename);
             goto done;
         }
     }
@@ -716,7 +717,7 @@ main(int    argc,
         goto done;
     clixon_debug(CLIXON_DBG_DEFAULT, "callhome_bind %s:%hu", addr, port);
     if ((ta = malloc(sizeof(*ta))) == NULL){
-        clicon_err(OE_UNIX, errno, "malloc");
+        clixon_err(OE_UNIX, errno, "malloc");
         goto done;
     }
     memset(ta, 0, sizeof(*ta));
@@ -741,9 +742,9 @@ main(int    argc,
         close(ss);
     if (ctx)
         SSL_CTX_free(ctx);        /* release context */
-    clicon_handle_exit(h); /* frees h and options (and streams) */
+    clixon_handle_exit(h); /* frees h and options (and streams) */
     clixon_err_exit();
     clixon_debug(CLIXON_DBG_DEFAULT, "clixon_restconf_callhome_client pid:%u done", getpid());
-    clicon_log_exit(); /* Must be after last clixon_debug */
+    clixon_log_exit(); /* Must be after last clixon_debug */
     return retval;
 }

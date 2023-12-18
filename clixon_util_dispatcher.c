@@ -103,7 +103,7 @@ main(int    argc,
 {
     int                 retval = -1;
     char               *argv0 = argv[0];
-    int                 logdst = CLICON_LOG_STDERR;
+    int                 logdst = CLIXON_LOG_STDERR;
     int                 dbg = 0;
     int                 c;
     char               *arg = NULL;
@@ -111,9 +111,12 @@ main(int    argc,
     dispatcher_entry_t *htable = NULL;
     int                 ret;
     char               *regpath = "/"; /* Register path */
+    clixon_handle       h;
     
     /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init("dispatcher", LOG_DEBUG, logdst); 
+    if ((h = clixon_handle_init()) == NULL)
+        goto done;
+    clixon_log_init(h, "dispatcher", LOG_DEBUG, logdst); 
     
     optind = 1;
     opterr = 0;
@@ -140,8 +143,8 @@ main(int    argc,
     /* 
      * Logs, error and debug to stderr or syslog, set debug level
      */
-    clicon_log_init("xpath", dbg?LOG_DEBUG:LOG_INFO, logdst);
-    clixon_debug_init(dbg, NULL);
+    clixon_log_init(h, "xpath", dbg?LOG_DEBUG:LOG_INFO, logdst);
+    clixon_debug_init(h, dbg);
     /* Now rest of options */
     opterr = 0;
     optind = 1;

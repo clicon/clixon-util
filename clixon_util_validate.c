@@ -93,7 +93,7 @@ main(int    argc,
     yang_stmt    *yspec = NULL;
     int           commit = 0;
     char         *database = NULL;
-    clicon_handle h;
+    clixon_handle h;
     int           dbg = 0;
     char         *dir;
     char         *str;
@@ -101,11 +101,9 @@ main(int    argc,
     cbuf         *cb = NULL;
 
     /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init(__FILE__, LOG_INFO, CLICON_LOG_STDERR);
-
-    /* Initialize clixon handle */
-    if ((h = clicon_handle_init()) == NULL)
+    if ((h = clixon_handle_init()) == NULL)
         goto done;
+    clixon_log_init(h, __FILE__, LOG_INFO, CLIXON_LOG_STDERR);
     /*
      * Command-line options for help, debug, and config-file
      */
@@ -133,7 +131,7 @@ main(int    argc,
             usage(argv[0]);
             break;
         }
-    clixon_debug_init(dbg, NULL);
+    clixon_debug_init(h, dbg);
     yang_init(h);
     /* Find and read configfile */
     if (clicon_options_main(h) < 0)
@@ -223,7 +221,7 @@ main(int    argc,
     if (database == NULL)
         database = "candidate";
     if ((cb = cbuf_new()) == NULL){
-        clicon_err(OE_UNIX, errno, "cbuf_new");
+        clixon_err(OE_UNIX, errno, "cbuf_new");
         goto done;
     }
     if (commit){
@@ -235,7 +233,7 @@ main(int    argc,
             goto done;
     }
     if (ret == 0){
-        clicon_err(OE_DB, 0, " Failed: %s", cbuf_get(cb));
+        clixon_err(OE_DB, 0, " Failed: %s", cbuf_get(cb));
         goto done;
     }
     fprintf(stdout, "OK\n");

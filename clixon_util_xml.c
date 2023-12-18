@@ -39,8 +39,6 @@
  * The function can do yang validation, process xml and json, etc.
  * On success, nothing is printed and exitcode 0
  * On failure, an error is printed on stderr and exitcode != 0
- * Failure error prints are different, it would be nice to make them more
- * uniform. (see clixon_netconf_error)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -70,7 +68,7 @@
 #define UTIL_XML_OPTS "hD:f:JjXl:pvoy:Y:t:T:u"
 
 static int
-validate_tree(clicon_handle h,
+validate_tree(clixon_handle h,
               cxobj        *xt,
               yang_stmt    *yspec)
 {
@@ -84,14 +82,14 @@ validate_tree(clicon_handle h,
     if (xml_default_recurse(xt, 0) < 0)
         goto done;
     if (xml_apply(xt, -1, xml_sort_verify, h) < 0)
-        clicon_log(LOG_NOTICE, "%s: sort verify failed", __FUNCTION__);
+        clixon_log(h, LOG_NOTICE, "%s: sort verify failed", __FUNCTION__);
     if ((ret = xml_yang_validate_all_top(h, xt, &xerr)) < 0)
         goto done;
     if (ret > 0 && (ret = xml_yang_validate_add(h, xt, &xerr)) < 0)
         goto done;
     if (ret == 0){
         if ((cbret = cbuf_new()) ==NULL){
-            clicon_err(OE_XML, errno, "cbuf_new");
+            clixon_err(OE_XML, errno, "cbuf_new");
             goto done;
         }
         if (netconf_err2cb(h, xerr, cbret) < 0)
@@ -142,7 +140,7 @@ main(int    argc,
     cxobj        *xt = NULL;   /* Base cxobj tree parsed from xml or json */
     cbuf         *cb = cbuf_new();
     int           c;
-    int           logdst = CLICON_LOG_STDERR;
+    int           logdst = CLIXON_LOG_STDERR;
     int           jsonin = 0;
     int           jsonout = 0;
     int           textout = 0;
@@ -154,7 +152,7 @@ main(int    argc,
     int           pretty = 0;
     int           validate = 0;
     int           output = 0;
-    clicon_handle h;
+    clixon_handle h;
     struct stat   st;
     FILE         *fp = stdin; /* base file, stdin */
     FILE         *tfp = NULL; /* top file */
@@ -167,12 +165,12 @@ main(int    argc,
     yang_bind     yb;
     int           dbg = 0;
 
-    /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init(__FILE__, LOG_INFO, CLICON_LOG_STDERR);
-
     /* Initialize clixon handle */
-    if ((h = clicon_handle_init()) == NULL)
+    if ((h = clixon_handle_init()) == NULL)
         goto done;
+    /* In the startup, logs to stderr & debug flag set later */
+    clixon_log_init(h, __FILE__, LOG_INFO, CLIXON_LOG_STDERR);
+
     if ((xcfg = xml_new("clixon-config", NULL, CX_ELMNT)) == NULL)
         goto done;
     if (clicon_conf_xml_set(h, xcfg) < 0)
@@ -202,7 +200,7 @@ main(int    argc,
             textout++;
             break;
         case 'l': /* Log destination: s|e|o|f */
-            if ((logdst = clicon_log_opt(optarg[0])) < 0)
+            if ((logdst = clixon_log_opt(optarg[0])) < 0)
                 usage(argv[0]);
             break;
         case 'o':
@@ -244,15 +242,15 @@ main(int    argc,
         fprintf(stderr, "-t requires -T\n");
         usage(argv[0]);
     }
-    clicon_log_init(__FILE__, dbg?LOG_DEBUG:LOG_INFO, logdst);
-    clixon_debug_init(dbg, NULL);
+    clixon_log_init(h, __FILE__, dbg?LOG_DEBUG:LOG_INFO, logdst);
+    clixon_debug_init(h, dbg);
     yang_init(h);
     /* 1. Parse yang */
     if (yang_file_dir){
         if ((yspec = yspec_new()) == NULL)
             goto done;
         if (stat(yang_file_dir, &st) < 0){
-            clicon_err(OE_YANG, errno, "%s not found", yang_file_dir);
+            clixon_err(OE_YANG, errno, "%s not found", yang_file_dir);
             goto done;
         }
         if (S_ISDIR(st.st_mode)){
@@ -270,15 +268,15 @@ main(int    argc,
      */
     if (top_input_filename){
         if ((tfp = fopen(top_input_filename, "r")) == NULL){
-            clicon_err(OE_YANG, errno, "fopen(%s)", top_input_filename);
+            clixon_err(OE_YANG, errno, "fopen(%s)", top_input_filename);
             goto done;
         }
         if ((ret = clixon_xml_parse_file(tfp, YB_MODULE, yspec, &xtop, &xerr)) < 0){
-            fprintf(stderr, "xml parse error: %s\n", clicon_err_reason);
+            fprintf(stderr, "xml parse error: %s\n", clixon_err_reason());
             goto done;
         }
         if (ret == 0){
-            clixon_netconf_error(h, xerr, "Parse top file", NULL);
+            clixon_err_netconf(h, OE_XML, 0, xerr, "Parse top file");
             goto done;
         }
         if (validate_tree(h, xtop, yspec) < 0)
@@ -295,7 +293,7 @@ main(int    argc,
     }
     if (input_filename){
         if ((fp = fopen(input_filename, "r")) == NULL){
-            clicon_err(OE_YANG, errno, "open(%s)", input_filename);
+            clixon_err(OE_YANG, errno, "open(%s)", input_filename);
             goto done;
         }
     }
@@ -304,7 +302,7 @@ main(int    argc,
         if ((ret = clixon_json_parse_file(fp, 1, top_input_filename?YB_PARENT:YB_MODULE, yspec, &xt, &xerr)) < 0)
             goto done;
         if (ret == 0){
-            clixon_netconf_error(h, xerr, "util_xml", NULL);
+            clixon_err_netconf(h, OE_XML, 0, xerr, "util_xml");
             goto done;
         }
     }
@@ -316,11 +314,11 @@ main(int    argc,
         else
             yb = YB_PARENT;
         if ((ret = clixon_xml_parse_file(fp, yb, yspec, &xt, &xerr)) < 0){
-            fprintf(stderr, "xml parse error: %s\n", clicon_err_reason);
+            fprintf(stderr, "xml parse error: %s\n", clixon_err_reason());
             goto done;
         }
         if (ret == 0){
-            clixon_netconf_error(h, xerr, "util_xml", NULL);
+            clixon_err_netconf(h, OE_XML, 0, xerr, "util_xml");
             goto done;
         }
     }

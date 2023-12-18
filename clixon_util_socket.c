@@ -84,7 +84,7 @@ main(int    argc,
 {
     int                retval = -1;
     int                c;
-    int                logdst = CLICON_LOG_STDERR;
+    int                logdst = CLIXON_LOG_STDERR;
     struct clicon_msg *msg = NULL;
     char              *sockpath = NULL;
     char              *retdata = NULL;
@@ -97,15 +97,16 @@ main(int    argc,
     char              *family = "UNIX";
     int                ret;
     cbuf              *cb = cbuf_new();
-    clicon_handle      h;
+    clixon_handle      h;
     int                dbg = 0;
     int                s;
     int                eof = 0;
 
     /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init(__FILE__, LOG_INFO, CLICON_LOG_STDERR);
-    if ((h = clicon_handle_init()) == NULL)
+    if ((h = clixon_handle_init()) == NULL)
         goto done;
+    clixon_log_init(h, __FILE__, LOG_INFO, CLIXON_LOG_STDERR);
+
     optind = 1;
     opterr = 0;
     while ((c = getopt(argc, argv, "hD:s:f:Ja:")) != -1)
@@ -133,8 +134,8 @@ main(int    argc,
             usage(argv[0]);
             break;
         }
-    clicon_log_init(__FILE__, dbg?LOG_DEBUG:LOG_INFO, logdst);
-    clixon_debug_init(dbg, NULL);
+    clixon_log_init(h, __FILE__, dbg?LOG_DEBUG:LOG_INFO, logdst);
+    clixon_debug_init(h, dbg);
 
     if (sockpath == NULL){
         fprintf(stderr, "Mandatory option missing: -s <sockpath>\n");
@@ -142,7 +143,7 @@ main(int    argc,
     }
     if (input_filename){
         if ((fp = fopen(input_filename, "r")) == NULL){
-            clicon_err(OE_YANG, errno, "open(%s)", input_filename);
+            clixon_err(OE_YANG, errno, "open(%s)", input_filename);
             goto done;
         }
     }
@@ -157,7 +158,7 @@ main(int    argc,
     }
     else{
         if (clixon_xml_parse_file(fp, YB_NONE, NULL, &xt, NULL) < 0){
-            fprintf(stderr, "xml parse error: %s\n", clicon_err_reason);
+            fprintf(stderr, "xml parse error: %s\n", clixon_err_reason());
             goto done;
         }
     }

@@ -160,16 +160,19 @@ int
 main(int    argc,
      char **argv)
 {
-    int         retval = -1;
-    char       *argv0 = argv[0];
-    int         c;
-    char       *regexp = NULL;
-    char       *content = NULL;
-    int         ret = 0;
-    int         nr = 1;
-    int         mode = 0; /* 0 is posix, 1 is libxml */
-    int         dbg = 0;
+    int           retval = -1;
+    char         *argv0 = argv[0];
+    int           c;
+    char         *regexp = NULL;
+    char         *content = NULL;
+    int           ret = 0;
+    int           nr = 1;
+    int           mode = 0; /* 0 is posix, 1 is libxml */
+    int           dbg = 0;
+    clixon_handle h;
 
+    if ((h = clixon_handle_init()) == NULL)
+        goto done;
     optind = 1;
     opterr = 0;
     while ((c = getopt(argc, argv, "hD:pxn:r:c:")) != -1)
@@ -201,8 +204,8 @@ main(int    argc,
             usage(argv[0]);
             break;
         }
-    clicon_log_init(__FILE__, dbg?LOG_DEBUG:LOG_INFO, CLICON_LOG_STDERR);
-    clixon_debug_init(dbg, NULL);
+    clixon_log_init(h, __FILE__, dbg?LOG_DEBUG:LOG_INFO, CLIXON_LOG_STDERR);
+    clixon_debug_init(h, dbg);
 
     if (regexp == NULL){
         fprintf(stderr, "-r mandatory\n");

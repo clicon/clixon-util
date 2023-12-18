@@ -102,11 +102,12 @@ usage(char *argv0)
 }
 
 int
-main(int argc, char **argv)
+main(int    argc,
+     char **argv)
 {
     int                 retval = -1;
     int                 c;
-    clicon_handle       h;
+    clixon_handle       h;
     char               *argv0;
     char               *db = "running";
     char               *cmd = NULL;
@@ -124,14 +125,13 @@ main(int argc, char **argv)
     int                 dbg = 0;
     cxobj              *xerr = NULL;
     cxobj              *xcfg = NULL;
-
+    
     /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init(__FILE__, LOG_INFO, CLICON_LOG_STDERR); 
-
+    if ((h = clixon_handle_init()) == NULL)
+        goto done;
+    clixon_log_init(h, __FILE__, LOG_INFO, CLIXON_LOG_STDERR); 
     argv0 = argv[0];
     /* Defaults */
-    if ((h = clicon_handle_init()) == NULL)
-        goto done;
     if ((xcfg = xml_new("clixon-config", NULL, CX_ELMNT)) == NULL)
         goto done;
     if (clicon_conf_xml_set(h, xcfg) < 0)
@@ -180,8 +180,8 @@ main(int argc, char **argv)
     /* 
      * Logs, error and debug to stderr, set debug level
      */
-    clicon_log_init(__FILE__, dbg?LOG_DEBUG:LOG_INFO, CLICON_LOG_STDERR);
-    clixon_debug_init(dbg, NULL);
+    clixon_log_init(h, __FILE__, dbg?LOG_DEBUG:LOG_INFO, CLIXON_LOG_STDERR);
+    clixon_debug_init(h, dbg);
 
     argc -= optind;
     argv += optind;
@@ -189,11 +189,11 @@ main(int argc, char **argv)
         usage(argv0);
     cmd = argv[0];
     if (dbdir == NULL){
-        clicon_err(OE_DB, 0, "Missing dbdir -b option");
+        clixon_err(OE_DB, 0, "Missing dbdir -b option");
         goto done;
     }
     if (yangfilename == NULL){
-        clicon_err(OE_YANG, 0, "Missing yang filename -y option");
+        clixon_err(OE_YANG, 0, "Missing yang filename -y option");
         goto done;
     }
     /* Connect to plugin to get a handle */
@@ -237,7 +237,7 @@ main(int argc, char **argv)
             if (xmldb_get(h, db, NULL, xpath, &xt) < 0)
                 goto done;
             if (xt == NULL){
-                clicon_err(OE_DB, 0, "xt is NULL");
+                clixon_err(OE_DB, 0, "xt is NULL");
                 goto done;
             }
             if (clixon_xml2file(stdout, xt, 0, 0, NULL, fprintf, 0, 0) < 0)
@@ -252,22 +252,22 @@ main(int argc, char **argv)
     else if (strcmp(cmd, "put")==0){
         if (argc == 2){
             if (xmlfilename == NULL){
-                clicon_err(OE_DB, 0, "XML filename expected");
+                clixon_err(OE_DB, 0, "XML filename expected");
                 usage(argv0);
             }
         }
         else if (argc != 3){
-            clicon_err(OE_DB, 0, "Unexpected nr of args: %d", argc);
+            clixon_err(OE_DB, 0, "Unexpected nr of args: %d", argc);
             usage(argv0);
         }
         if (xml_operation(argv[1], &op) < 0){
-            clicon_err(OE_DB, 0, "Unrecognized operation: %s", argv[1]);
+            clixon_err(OE_DB, 0, "Unrecognized operation: %s", argv[1]);
             usage(argv0);
         }
         if (argc == 2){
             FILE *fp;
             if ((fp = fopen(xmlfilename, "r")) == NULL){
-                clicon_err(OE_UNIX, errno, "fopen(%s)", xmlfilename);
+                clixon_err(OE_UNIX, errno, "fopen(%s)", xmlfilename);
                 goto done;
             }
             if (clixon_xml_parse_file(fp, YB_MODULE, yspec, &xt, NULL) < 0)
@@ -285,7 +285,7 @@ main(int argc, char **argv)
         if (xml_name_set(xt, NETCONF_INPUT_CONFIG) < 0)
             goto done;
         if ((cbret = cbuf_new()) == NULL){
-            clicon_err(OE_UNIX, errno, "cbuf_new");
+            clixon_err(OE_UNIX, errno, "cbuf_new");
             goto done;
         }
         if ((ret = xmldb_put(h, db, op, xt, NULL, cbret)) < 0)
@@ -344,7 +344,7 @@ main(int argc, char **argv)
             goto done;
     }
     else{
-        clicon_err(OE_DB, 0, "Unrecognized command: %s", cmd);
+        clixon_err(OE_DB, 0, "Unrecognized command: %s", cmd);
         usage(argv0);
     }
     if (xmldb_disconnect(h) < 0)
@@ -358,7 +358,7 @@ main(int argc, char **argv)
     if (xt)
         xml_free(xt);
     if (h)
-        clicon_handle_exit(h);
+        clixon_handle_exit(h);
     if (yspec)
         ys_free(yspec);
     return retval;

@@ -105,7 +105,7 @@ main(int    argc,
     char       *filename;
     cbuf       *cb = NULL;
     int         api_path_p = 0; /* api-path or instance-id */
-    clicon_handle h;
+    clixon_handle h;
     struct stat   st;
     cxobj        *xcfg = NULL;
     cxobj        *xerr = NULL; /* malloced must be freed */
@@ -113,10 +113,11 @@ main(int    argc,
     int           dbg = 0;
 
     /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init("api-path", LOG_DEBUG, CLICON_LOG_STDERR);
-    /* Initialize clixon handle */
-    if ((h = clicon_handle_init()) == NULL)
+    if ((h = clixon_handle_init()) == NULL)
         goto done;
+    clixon_log_init(h, "api-path", LOG_DEBUG, CLIXON_LOG_STDERR);
+    /* Initialize clixon handle */
+
     /* Initialize config tree (needed for -Y below) */
     if ((xcfg = xml_new("clixon-config", NULL, CX_ELMNT)) == NULL)
         goto done;
@@ -136,7 +137,7 @@ main(int    argc,
         case 'f': /* XML file */
             filename = optarg;
             if ((fp = fopen(filename, "r")) == NULL){
-                clicon_err(OE_UNIX, errno, "fopen(%s)", optarg);
+                clixon_err(OE_UNIX, errno, "fopen(%s)", optarg);
                 goto done;
             }
             break;
@@ -160,7 +161,7 @@ main(int    argc,
             usage(argv[0]);
             break;
         }
-    clixon_debug_init(dbg, NULL);
+    clixon_debug_init(h, dbg);
     yang_init(h);
 
     /* Parse yang */
@@ -168,7 +169,7 @@ main(int    argc,
         if ((yspec = yspec_new()) == NULL)
             goto done;
         if (stat(yang_file_dir, &st) < 0){
-            clicon_err(OE_YANG, errno, "%s not found", yang_file_dir);
+            clixon_err(OE_YANG, errno, "%s not found", yang_file_dir);
             goto done;
         }
         if (S_ISDIR(st.st_mode)){
@@ -217,7 +218,7 @@ main(int    argc,
      * XXX Note 0 above, stdin here
      */
     if (clixon_xml_parse_file(fp, YB_NONE, NULL, &x, NULL) < 0){
-        fprintf(stderr, "Error: parsing: %s\n", clicon_err_reason);
+        fprintf(stderr, "Error: parsing: %s\n", clixon_err_reason());
         return -1;
     }
 
@@ -228,7 +229,7 @@ main(int    argc,
             goto done;
         if (ret == 0){
             if ((cb = cbuf_new()) ==NULL){
-                clicon_err(OE_XML, errno, "cbuf_new");
+                clixon_err(OE_XML, errno, "cbuf_new");
                 goto done;
             }
             if (netconf_err2cb(h, xerr, cb) < 0)
@@ -240,7 +241,7 @@ main(int    argc,
         if (xml_sort_recurse(x) < 0)
             goto done;
         if (xml_apply0(x, -1, xml_sort_verify, h) < 0)
-            clicon_log(LOG_NOTICE, "%s: sort verify failed", __FUNCTION__);
+            clixon_log(h, LOG_NOTICE, "%s: sort verify failed", __FUNCTION__);
         /* Add default values */
         if (xml_default_recurse(x, 0) < 0)
             goto done;
@@ -250,7 +251,7 @@ main(int    argc,
             goto done;
         if (ret == 0){
             if ((cb = cbuf_new()) ==NULL){
-                clicon_err(OE_XML, errno, "cbuf_new");
+                clixon_err(OE_XML, errno, "cbuf_new");
                 goto done;
             }
             if (netconf_err2cb(h, xerr, cb) < 0)
@@ -272,7 +273,9 @@ main(int    argc,
                 goto done;
         }
         if (ret == 0){
-            fprintf(stderr, "Fail %d %s\n", clicon_errno, clicon_err_reason);
+            fprintf(stderr, "Fail %d %s\n",
+                    clixon_err_category(),
+                    clixon_err_reason());
             goto done;
         }
     }
@@ -301,6 +304,6 @@ main(int    argc,
     if (fp)
         fclose(fp);
     if (h)
-        clicon_handle_exit(h);
+        clixon_handle_exit(h);
     return retval;
 }

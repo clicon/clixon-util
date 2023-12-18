@@ -267,7 +267,7 @@ send_client_connection_header(nghttp2_session *session)
     /* client 24 bytes magic string will be sent by nghttp2 library */
     rv = nghttp2_submit_settings(session, NGHTTP2_FLAG_NONE, iv, ARRLEN(iv));
     if (rv != 0) {
-        clicon_err(OE_XML, 0, "Could not submit SETTINGS: %s", nghttp2_strerror(rv));
+        clixon_err(OE_XML, 0, "Could not submit SETTINGS: %s", nghttp2_strerror(rv));
         goto done;
     }
     retval = 0;
@@ -300,7 +300,7 @@ submit_request(session_data *sd,
                                             ARRLEN(hdrs),
                                             NULL,
                                             NULL)) < 0){
-        clicon_err(OE_XML, 0, "Could not submit HTTP request: %s",
+        clixon_err(OE_XML, 0, "Could not submit HTTP request: %s",
                    nghttp2_strerror(sd->sd_stream_id));
         goto done;
     }
@@ -327,23 +327,23 @@ socket_connect_inet(char              *hostname,
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     if ((ret = inet_pton(addr.sin_family, hostname, &addr.sin_addr)) < 0){
-        clicon_err(OE_UNIX, errno, "inet_pton");
+        clixon_err(OE_UNIX, errno, "inet_pton");
         goto done;
     }
     if (ret == 0){ /* Try DNS NOTE OBSOLETE */
         if ((host = gethostbyname(hostname)) == NULL){
-            clicon_err(OE_UNIX, errno, "gethostbyname");
+            clixon_err(OE_UNIX, errno, "gethostbyname");
             goto done;
         }
         addr.sin_addr.s_addr = *(long*)(host->h_addr); /* XXX Just to get it to work */
     }
     /* special error handling to get understandable messages (otherwise ENOENT) */
     if ((s = socket(addr.sin_family, SOCK_STREAM, 0)) < 0) {
-        clicon_err(OE_CFG, errno, "socket");
+        clixon_err(OE_CFG, errno, "socket");
         return -1;
     }
     if (connect(s, (struct sockaddr*)&addr, sizeof(addr)) < 0){
-        clicon_err(OE_CFG, errno, "connecting socket inet4");
+        clixon_err(OE_CFG, errno, "connecting socket inet4");
         close(s);
         goto done;
     }
@@ -392,7 +392,7 @@ InitCTX(void)
 #endif
     /* Create new context */
     if ((ctx = SSL_CTX_new(method)) == NULL){
-        clicon_err(OE_XML, errno, "SSL_CTX_new");
+        clixon_err(OE_XML, errno, "SSL_CTX_new");
         goto done;
     }
 
@@ -427,7 +427,7 @@ ssl_input_cb(int   s,
     session = sd->sd_session;
     /* get reply & decrypt */
     if ((n = SSL_read(ssl, buf, sizeof(buf))) < 0){
-        clicon_err(OE_XML, errno, "SSL_read");
+        clixon_err(OE_XML, errno, "SSL_read");
         goto done;
     }
     if (n == 0){
@@ -435,7 +435,7 @@ ssl_input_cb(int   s,
         goto done;
     }
     if ((readlen = nghttp2_session_mem_recv(session, (unsigned char*)buf, n)) < 0){
-        clicon_err(OE_XML, errno, "nghttp2_session_mem_recv");
+        clixon_err(OE_XML, errno, "nghttp2_session_mem_recv");
         goto done;
     }
     nghttp2_session_send(session);
@@ -466,7 +466,7 @@ main(int    argc,
      char **argv)
 {
     int           retval = -1;
-    clicon_handle h;
+    clixon_handle h;
     int           c;
     char         *hostname = NULL;
     uint16_t      port = 443;
@@ -479,9 +479,10 @@ main(int    argc,
     int              dbg = 0;
 
     /* In the startup, logs to stderr & debug flag set later */
-    clicon_log_init(__FILE__, LOG_INFO, CLICON_LOG_STDERR);
-    if ((h = clicon_handle_init()) == NULL)
+    if ((h = clixon_handle_init()) == NULL)
         goto done;
+    clixon_log_init(h, __FILE__, LOG_INFO, CLIXON_LOG_STDERR);
+
     while ((c = getopt(argc, argv, UTIL_GRPC_OPTS)) != -1)
         switch (c) {
         case 'h':
@@ -502,7 +503,7 @@ main(int    argc,
         fprintf(stderr, "-H <hostname> is mandatory\n");
         usage(argv[0]);
     }
-    clixon_debug_init(dbg, NULL);
+    clixon_debug_init(h, dbg);
     SSL_library_init();
     if ((ctx = InitCTX()) == NULL)
         goto done;
@@ -512,13 +513,13 @@ main(int    argc,
     SSL_set_fd(ssl, ss);    /* attach the socket descriptor */
     /* perform the connection */
     if ((ret = SSL_connect(ssl)) < 0){
-        clicon_err(OE_XML, errno, "SSL_connect");
+        clixon_err(OE_XML, errno, "SSL_connect");
         goto done;
     }
     /* In the nghttp2 code, there is an asynchronous step for
      * a connected socket, here I just assume it is connected. */
     if ((sd = malloc(sizeof(*sd))) == NULL){
-        clicon_err(OE_UNIX, errno, "malloc");
+        clixon_err(OE_UNIX, errno, "malloc");
         goto done;
     }
     memset(sd, 0, sizeof(*sd));
@@ -532,7 +533,7 @@ main(int    argc,
     if (submit_request(sd, "https", hostname, "/") < 0)
         goto done;
     if (nghttp2_session_send(session) != 0){
-        clicon_err(OE_XML, errno, "nghttp2_session_send");
+        clixon_err(OE_XML, errno, "nghttp2_session_send");
         goto done;
     }
     if (clixon_event_reg_fd(ss, ssl_input_cb, sd, "ssl socket") < 0)

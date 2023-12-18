@@ -91,7 +91,7 @@ main(int    argc,
     cxobj     *xt = NULL;
     cbuf      *cb = cbuf_new();
     int        c;
-    int        logdst = CLICON_LOG_STDERR;
+    int        logdst = CLIXON_LOG_STDERR;
     int        json = 0;
     char      *yang_filename = NULL;
     yang_stmt *yspec = NULL;
@@ -99,7 +99,10 @@ main(int    argc,
     int        ret;
     int        pretty = 0;
     int        dbg = 0;
-
+    clixon_handle h;
+    
+    if ((h = clixon_handle_init()) == NULL)
+        goto done;
     optind = 1;
     opterr = 0;
     while ((c = getopt(argc, argv, "hD:jl:py:")) != -1)
@@ -115,7 +118,7 @@ main(int    argc,
             json++;
             break;
         case 'l': /* Log destination: s|e|o|f */
-            if ((logdst = clicon_log_opt(optarg[0])) < 0)
+            if ((logdst = clixon_log_opt(optarg[0])) < 0)
                 usage(argv[0]);
             break;
         case 'p':
@@ -128,14 +131,14 @@ main(int    argc,
             usage(argv[0]);
             break;
         }
-    clicon_log_init(__FILE__, dbg?LOG_DEBUG:LOG_INFO, logdst);
-    clixon_debug_init(dbg, NULL);
+    clixon_log_init(h, __FILE__, dbg?LOG_DEBUG:LOG_INFO, logdst);
+    clixon_debug_init(h, dbg);
 
     if (yang_filename){
         if ((yspec = yspec_new()) == NULL)
             goto done;
         if (yang_parse_filename(NULL, yang_filename, yspec) == NULL){
-            fprintf(stderr, "yang parse error %s\n", clicon_err_reason);
+            fprintf(stderr, "yang parse error %s\n", clixon_err_reason());
             return -1;
         }
     }

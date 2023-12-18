@@ -1,4 +1,4 @@
-/*
+ /*
  *
   ***** BEGIN LICENSE BLOCK *****
  
@@ -128,15 +128,15 @@ main(int argc, char **argv)
     cxobj        *xerr = NULL;
     int           sort = 0;
     int           ret;
-    clicon_handle h;
+    clixon_handle h;
     enum opx      opx = OPX_ERROR;
     char         *reason = NULL;
     int           dbg = 0;
     cxobj        *xcfg = NULL;
 
-    clicon_log_init("clixon_insert", LOG_DEBUG, CLICON_LOG_STDERR);
-    if ((h = clicon_handle_init()) == NULL)
+    if ((h = clixon_handle_init()) == NULL)
         goto done;
+    clixon_log_init(h, "clixon_insert", LOG_DEBUG, CLIXON_LOG_STDERR);
     if ((xcfg = xml_new("clixon-config", NULL, CX_ELMNT)) == NULL)
         goto done;
     if (clicon_conf_xml_set(h, xcfg) < 0)
@@ -183,25 +183,25 @@ main(int argc, char **argv)
         usage(argv0);
     if (opx == OPX_ERROR)
         usage(argv0);
-    clixon_debug_init(dbg, NULL);
+    clixon_debug_init(h, dbg);
     if ((yspec = yspec_new()) == NULL)
         goto done;
     if (yang_spec_parse_file(h, yangfile, yspec) < 0)
         goto done;
     /* Parse base XML */
     if ((ret = clixon_xml_parse_string(x0str, YB_MODULE, yspec, &x0, &xerr)) < 0){
-        clicon_err(OE_XML, 0, "Parsing base xml: %s", x0str);
+        clixon_err(OE_XML, 0, "Parsing base xml: %s", x0str);
         goto done;
     }
     if (ret == 0){
-        clixon_netconf_error(h, xerr, "Parsing base xml", NULL);
+        clixon_err_netconf(h, OE_XML, 0, xerr, "Parsing base xml");
         goto done;
     }
     /* Get base subtree by xpath */
     if (xpath == NULL)
         xb = x0;
     else if ((xb = xpath_first(x0, NULL, "%s", xpath)) == NULL){
-        clicon_err(OE_XML, 0, "xpath: %s not found in x0", xpath);
+        clixon_err(OE_XML, 0, "xpath: %s not found in x0", xpath);
         goto done;
     }
     if (clixon_debug_get()){
@@ -212,58 +212,58 @@ main(int argc, char **argv)
     case OPX_PARENT:
         /* Parse insert XML */
         if ((ret = clixon_xml_parse_string(x1str, YB_PARENT, yspec, &xb, &xerr)) < 0){
-            clicon_err(OE_XML, 0, "Parsing insert xml: %s", x1str);
+            clixon_err(OE_XML, 0, "Parsing insert xml: %s", x1str);
             goto done;
         }
         if (ret == 0){
-            clixon_netconf_error(h, xerr, "Parsing secondary xml", NULL);
+            clixon_err_netconf(h, OE_XML, 0, xerr, "Parsing secondary xml");
             goto done;
         }
         break;
     case OPX_MERGE:
         /* Parse merge XML */
         if ((ret = clixon_xml_parse_string(x1str, YB_MODULE, yspec, &x1, &xerr)) < 0){
-            clicon_err(OE_XML, 0, "Parsing insert xml: %s", x1str);
+            clixon_err(OE_XML, 0, "Parsing insert xml: %s", x1str);
             goto done;
         }
         if (ret == 0){
-            clixon_netconf_error(h, xerr, "Parsing secondary xml", NULL);
+            clixon_err_netconf(h, OE_XML, 0, xerr, "Parsing secondary xml");
             goto done;
         }
         if (xpath == NULL)
             xi = x1;
         else if ((xi = xpath_first(x1, NULL, "%s", xpath)) == NULL){
-            clicon_err(OE_XML, 0, "xpath: %s not found in xi", xpath);
+            clixon_err(OE_XML, 0, "xpath: %s not found in xi", xpath);
             goto done;
         }
         if ((ret = xml_merge(xb, xi, yspec, &reason)) < 0)
             goto done;
         if (ret == 0){
-            clicon_err(OE_XML, 0, "%s", reason);
+            clixon_err(OE_XML, 0, "%s", reason);
             goto done;
         }
         break;
     case OPX_INSERT:
         /* Parse insert XML */
         if ((ret = clixon_xml_parse_string(x1str, YB_MODULE, yspec, &x1, &xerr)) < 0){
-            clicon_err(OE_XML, 0, "Parsing insert xml: %s", x1str);
+            clixon_err(OE_XML, 0, "Parsing insert xml: %s", x1str);
             goto done;
         }
         if (ret == 0){
-            clixon_netconf_error(h, xerr, "Parsing secondary xml", NULL);
+            clixon_err_netconf(h, OE_XML, 0, xerr, "Parsing secondary xml");
             goto done;
         }
         /* Get secondary subtree by xpath */
         if (xpath == NULL)
             xi = x1;
         else if ((xi = xpath_first(x1, NULL, "%s", xpath)) == NULL){
-            clicon_err(OE_XML, 0, "xpath: %s not found in xi", xpath);
+            clixon_err(OE_XML, 0, "xpath: %s not found in xi", xpath);
             goto done;
         }
 
         /* Find first element child of secondary */
         if ((xi1 = xml_child_i_type(xi, 0, CX_ELMNT)) == NULL){
-            clicon_err(OE_XML, 0, "xi has no element child");
+            clixon_err(OE_XML, 0, "xi has no element child");
             goto done;
         }
         /* Remove it from parent */
