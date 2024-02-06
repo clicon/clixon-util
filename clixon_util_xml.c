@@ -79,7 +79,7 @@ validate_tree(clixon_handle h,
 
     /* should already be populated */
     /* Add default values */
-    if (xml_default_recurse(xt, 0) < 0)
+    if (xml_default_recurse(xt, 0, 0) < 0)
         goto done;
     if (xml_apply(xt, -1, xml_sort_verify, h) < 0)
         clixon_log(h, LOG_NOTICE, "%s: sort verify failed", __FUNCTION__);
