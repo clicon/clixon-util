@@ -14,12 +14,14 @@ jobs:
   native:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 # NATIVE BUILD and TEST
     - name: install cligen native
       run: (git clone https://github.com/clicon/cligen.git && cd cligen && ./configure && make && sudo make install)
-    - name: install ssl, nghttp2, curl
-      run: sudo apt install -y libssl-dev libnghttp2-dev libcurl4-openssl-dev
+    - name: install ssl, nghttp2
+      run: sudo apt install -y libssl-dev libnghttp2-dev
+    - name: install libcurl
+      run: sudo apt install -y libcurl4-openssl-dev
     - name: install clixon native
       run: (git clone https://github.com/clicon/clixon.git && cd clixon && ./configure && make && sudo make install)
     - name: configure
