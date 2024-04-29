@@ -18,8 +18,10 @@ jobs:
 # NATIVE BUILD and TEST
     - name: install cligen native
       run: (git clone https://github.com/clicon/cligen.git && cd cligen && ./configure && make && sudo make install)
-    - name: install ssl, nghttp2
-      run: sudo apt install -y libssl-dev libnghttp2-dev
+    - name: run apt update
+      run: sudo apt update
+    - name: install libnghttp2-dev
+      run: sudo apt install -y libnghttp2-dev
     - name: install libcurl
       run: sudo apt install -y libcurl4-openssl-dev
     - name: install clixon native
