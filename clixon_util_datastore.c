@@ -199,6 +199,7 @@ main(int    argc,
     /* Connect to plugin to get a handle */
     if (xmldb_connect(h) < 0)
         goto done;
+    yang_init(h);
     /* Create yang spec */
     if ((yspec = yspec_new()) == NULL)
         goto done;
