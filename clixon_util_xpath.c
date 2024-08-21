@@ -291,7 +291,7 @@ main(int    argc,
         cvec *nsc1 = NULL;
         cbuf *cbreason = NULL;
 
-        if ((ret = xpath2canonical(xpath, nsc, yspec, &xpath1, &nsc1, &cbreason)) < 0)
+        if ((ret = xpath2canonical1(xpath, nsc, yspec, 1, &xpath1, &nsc1, &cbreason)) < 0)
             goto done;
         if (ret == 0){
             fprintf(stderr, "Error with %s: %s", xpath, cbuf_get(cbreason));
@@ -390,7 +390,6 @@ main(int    argc,
         }
         goto ok;
     }
-
     /* Print results */
     cb = cbuf_new();
     ctx_print2(cb, xc);
@@ -414,5 +413,7 @@ main(int    argc,
         fclose(fp);
     if (h)
         clixon_handle_exit(h);
+    if (yspec)
+        ys_free(yspec);
     return retval;
 }
