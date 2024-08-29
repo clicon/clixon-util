@@ -132,7 +132,8 @@ main(int    argc,
             break;
         }
     clixon_debug_init(h, dbg);
-    yang_init(h);
+    if (yang_init(h) < 0)
+        goto done;
     /* Find and read configfile */
     if (clicon_options_main(h) < 0)
         goto done;
@@ -178,9 +179,8 @@ main(int    argc,
         goto done;
 
     /* Create top-level yang spec and store as option */
-    if ((yspec = yspec_new()) == NULL)
+    if ((yspec = yspec_new(h, YANG_DATA_TOP)) == NULL)
         goto done;
-    clicon_dbspec_yang_set(h, yspec);
     /* Load backend plugins before yangs are loaded (eg extension callbacks) */
     if ((dir = clicon_backend_dir(h)) != NULL &&
         clixon_plugins_load(h, CLIXON_PLUGIN_INIT, dir,

@@ -184,7 +184,9 @@ main(int argc, char **argv)
     if (opx == OPX_ERROR)
         usage(argv0);
     clixon_debug_init(h, dbg);
-    if ((yspec = yspec_new()) == NULL)
+    if (yang_init(h) < 0)
+        goto done;
+    if ((yspec = yspec_new(h, YANG_DATA_TOP)) == NULL)
         goto done;
     if (yang_spec_parse_file(h, yangfile, yspec) < 0)
         goto done;

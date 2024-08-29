@@ -134,8 +134,10 @@ main(int    argc,
     clixon_log_init(h, __FILE__, dbg?LOG_DEBUG:LOG_INFO, logdst);
     clixon_debug_init(h, dbg);
 
+    if (yang_init(h) < 0)
+        goto done;
     if (yang_filename){
-        if ((yspec = yspec_new()) == NULL)
+        if ((yspec = yspec_new(h, YANG_DATA_TOP)) == NULL)
             goto done;
         if (yang_parse_filename(NULL, yang_filename, yspec) == NULL){
             fprintf(stderr, "yang parse error %s\n", clixon_err_reason());

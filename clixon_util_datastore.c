@@ -199,15 +199,15 @@ main(int    argc,
     /* Connect to plugin to get a handle */
     if (xmldb_connect(h) < 0)
         goto done;
-    yang_init(h);
+    if (yang_init(h) < 0)
+        goto done;
     /* Create yang spec */
-    if ((yspec = yspec_new()) == NULL)
+    if ((yspec = yspec_new(h, YANG_DATA_TOP)) == NULL)
         goto done;
     /* Parse yang spec from given file */
     if (yang_spec_parse_file(h, yangfilename, yspec) < 0)
         goto done;
     clicon_option_str_set(h, "CLICON_XMLDB_DIR", dbdir);
-    clicon_dbspec_yang_set(h, yspec);
     if (strcmp(cmd, "get")==0){
         if (argc != 1 && argc != 2)
             usage(argv0);

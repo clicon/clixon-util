@@ -108,7 +108,9 @@ main(int argc, char **argv)
         goto done;
     clixon_log_init(h, "clixon_util_yang", dbg?LOG_DEBUG:LOG_INFO, logdst);
     clixon_debug_init(h, dbg);
-    if ((yspec = yspec_new()) == NULL)
+    if (yang_init(h) < 0)
+        goto done;
+    if ((yspec = yspec_new(h, YANG_DATA_TOP)) == NULL)
         goto done;
     if (yang_parse_file(stdin, "yang test", yspec) == NULL){
         fprintf(stderr, "yang parse error %s\n", clixon_err_reason());
