@@ -91,49 +91,49 @@ clean:
 	rm -f *.gcda *.gcno *.gcov # coverage
 
 # APPS
-clixon_util_xml: clixon_util_xml.c $(LIBDEPS)
+clixon_util_xml: clixon_util_xml.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_json: clixon_util_json.c $(LIBDEPS)
+clixon_util_json: clixon_util_json.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_yang: clixon_util_yang.c $(LIBDEPS)
+clixon_util_yang: clixon_util_yang.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_xpath: clixon_util_xpath.c $(LIBDEPS)
+clixon_util_xpath: clixon_util_xpath.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_path: clixon_util_path.c $(LIBDEPS)
+clixon_util_path: clixon_util_path.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_datastore: clixon_util_datastore.c $(LIBDEPS)
+clixon_util_datastore: clixon_util_datastore.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_xml_mod: clixon_util_xml_mod.c $(LIBDEPS)
+clixon_util_xml_mod: clixon_util_xml_mod.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_regexp: clixon_util_regexp.c $(LIBDEPS)
+clixon_util_regexp: clixon_util_regexp.c
 	$(CC) $(LIBXML2_CFLAGS) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_socket: clixon_util_socket.c $(LIBDEPS)
+clixon_util_socket: clixon_util_socket.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_validate: clixon_util_validate.c $(BELIBDEPS) $(LIBDEPS) 
-	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ -l clixon_backend -o $@ $(LIBS) $(BELIBS)
+clixon_util_validate: clixon_util_validate.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ -l clixon_backend -o $@ $(LIBS)
 
-clixon_util_dispatcher: clixon_util_dispatcher.c $(BELIBDEPS) $(LIBDEPS)
-	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ -l clixon_backend -o $@ $(LIBS) $(BELIBS)
+clixon_util_dispatcher: clixon_util_dispatcher.c
+	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ -l clixon_backend -o $@ $(LIBS)
 
-clixon_util_stream: clixon_util_stream.c $(LIBDEPS)
+clixon_util_stream: clixon_util_stream.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -lcurl -o $@
 
-clixon_restconf_callhome_client: clixon_restconf_callhome_client.c $(LIBDEPS)
+clixon_restconf_callhome_client: clixon_restconf_callhome_client.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-clixon_util_ssl: clixon_util_ssl.c $(LIBDEPS)
+clixon_util_ssl: clixon_util_ssl.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-#clixon_util_grpc: clixon_util_grpc.c $(LIBDEPS)
+#clixon_util_grpc: clixon_util_grpc.c
 #	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
 distclean: clean
