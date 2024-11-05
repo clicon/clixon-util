@@ -290,8 +290,7 @@ main(int    argc,
     }
     retval = 0;
  done:
-    if (yspec != NULL)
-        ys_free(yspec);
+    yang_exit(h);
     if (cb)
         cbuf_free(cb);
     if (xvec)

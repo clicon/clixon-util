@@ -336,7 +336,7 @@ main(int    argc,
                 goto done;
         }
         else if (jsonout){
-            if (clixon_json2cbuf(cb, xt, pretty, 1, 0) < 0)
+            if (clixon_json2cbuf(cb, xt, pretty, 1, 0, 0) < 0)
                 goto done;
         }
         else if (clixon_xml2cbuf(cb, xt, 0, pretty, NULL, -1, 1) < 0)
@@ -344,6 +344,7 @@ main(int    argc,
         fprintf(stdout, "%s", cbuf_get(cb));
         fflush(stdout);
     }
+    yang_exit(h);
     retval = 0;
  done:
     if (tfp)
@@ -364,6 +365,8 @@ main(int    argc,
         xml_free(xt);
     if (cb)
         cbuf_free(cb);
+    if (h)
+        clixon_handle_exit(h);
     return retval;
 }
 

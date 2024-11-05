@@ -237,6 +237,7 @@ main(int    argc,
         goto done;
     }
     fprintf(stdout, "OK\n");
+    yang_exit(h);
     retval = 0;
  done:
     if (cb)

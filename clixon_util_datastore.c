@@ -350,6 +350,7 @@ main(int    argc,
     }
     if (xmldb_disconnect(h) < 0)
         goto done;
+    yang_exit(h);
     retval = 0;
   done:
     if (xcfg)

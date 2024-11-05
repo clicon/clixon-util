@@ -292,6 +292,7 @@ main(int argc, char **argv)
             goto done;
     }
     fprintf(stdout, "\n");
+    yang_exit(h);
     retval = 0;
  done:
     if (x0)
