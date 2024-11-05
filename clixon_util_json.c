@@ -158,11 +158,9 @@ main(int    argc,
         goto done;
     fprintf(stdout, "%s", cbuf_get(cb));
     fflush(stdout);
-    yang_exit(h);
     retval = 0;
  done:
-    if (yspec)
-        ys_free(yspec);
+    yang_exit(h);
     if (xt)
         xml_free(xt);
     if (cb)

@@ -117,10 +117,8 @@ main(int argc, char **argv)
         return -1;
     }
     yang_print(stdout, yspec);
-    yang_exit(h);
  done:
-    if (yspec)
-        ys_free(yspec);
-     return 0;
+    yang_exit(h);
+    return 0;
 }
 

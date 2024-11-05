@@ -84,6 +84,8 @@ APPSRC   += clixon_util_ssl.c
 
 APPS	  = $(APPSRC:.c=)
 
+.PHONY:	install uninstall TAGS depend loc
+
 all:	 $(APPS)
 
 clean:
@@ -143,15 +145,11 @@ install: $(APPS)
 	install -d -m 0755 $(DESTDIR)$(bindir)
 	install -m 0755 $(INSTALLFLAGS) $(APPS) $(DESTDIR)$(bindir)
 
-install-include:
-
-install-lib:
-
 uninstall: 
 	rm -f $(DESTDIR)$(bindir)/$(APPS)
 
 TAGS:
-	find . -name '*.[ch]' -print | etags -
+	find $(srcdir) -not \( -type d \( -path './.git' \) -prune \) -name '*.[ch]' -type f | xargs etags
 
 depend:
 	$(CC) $(DEPENDFLAGS) @DEFS@ $(CPPFLAGS) $(CFLAGS) -MM $(APPSRC) > .depend

@@ -344,9 +344,9 @@ main(int    argc,
         fprintf(stdout, "%s", cbuf_get(cb));
         fflush(stdout);
     }
-    yang_exit(h);
     retval = 0;
  done:
+    yang_exit(h);
     if (tfp)
         fclose(tfp);
     if (fp)

@@ -350,9 +350,10 @@ main(int    argc,
     }
     if (xmldb_disconnect(h) < 0)
         goto done;
-    yang_exit(h);
+
     retval = 0;
   done:
+    yang_exit(h);
     if (xcfg)
         xml_free(xcfg);
     if (cbret)
@@ -361,8 +362,5 @@ main(int    argc,
         xml_free(xt);
     if (h)
         clixon_handle_exit(h);
-    if (yspec)
-        ys_free(yspec);
     return retval;
 }
-

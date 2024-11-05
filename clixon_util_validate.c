@@ -237,9 +237,9 @@ main(int    argc,
         goto done;
     }
     fprintf(stdout, "OK\n");
-    yang_exit(h);
     retval = 0;
  done:
+    yang_exit(h);
     if (cb)
         cbuf_free(cb);
     return retval;

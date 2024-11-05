@@ -292,9 +292,9 @@ main(int argc, char **argv)
             goto done;
     }
     fprintf(stdout, "\n");
-    yang_exit(h);
     retval = 0;
  done:
+    yang_exit(h);
     if (x0)
         xml_free(x0);
     if (x1)
@@ -305,8 +305,6 @@ main(int argc, char **argv)
         xml_free(xerr);
     if (reason)
         free(reason);
-    if (yspec)
-        ys_free(yspec);
     if (fd > 0)
         close(fd);
     return retval;
