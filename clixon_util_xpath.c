@@ -1,4 +1,4 @@
- /*
+/*
  *
   ***** BEGIN LICENSE BLOCK *****
  
@@ -60,7 +60,7 @@ See https://www.w3.org/TR/xpath/
 #include "clixon/clixon.h"
 
 /* Command line options to be passed to getopt(3) */
-#define XPATH_OPTS "hD:f:p:i:In:cl:y:Y:"
+#define XPATH_OPTS "hD:f:p:i:In:cl:Ly:Y:"
 
 static int
 usage(char *argv0)
@@ -76,6 +76,7 @@ usage(char *argv0)
             "\t-n <pfx:id>\tNamespace binding (pfx=NULL for default)\n"
             "\t-c \t\tMap xpath to canonical form\n"
             "\t-l <s|e|o|f<file>> \tLog on (s)yslog, std(e)rr, std(o)ut or (f)ile (stderr is default)\n"
+            "\t-L \t\tLocalonly, ignore prefixes\n"
             "\t-y <filename> \tYang filename or dir (load all files)\n"
             "\t-Y <dir> \tYang dirs (can be several)\n"
             "and the following extra rules:\n"
@@ -149,6 +150,7 @@ main(int    argc,
     int         logdst = CLIXON_LOG_STDERR;
     int         dbg = 0;
     int         xpath_inverse = 0;
+    int         localonly = 0;
 
     /* Initialize clixon handle */
     if ((h = clixon_handle_init()) == NULL)
@@ -218,6 +220,9 @@ main(int    argc,
                 strlen(optarg)>1 &&
                 clixon_log_file(optarg+1) < 0)
                 goto done;
+            break;
+        case 'L':
+            localonly = 1;
             break;
         case 'y':
             yang_file_dir = optarg;
@@ -350,7 +355,7 @@ main(int    argc,
                 clixon_err(OE_XML, errno, "cbuf_new");
                 goto done;
             }
-            if (netconf_err2cb(h, xerr, cbret) < 0)
+            if (netconf_err2cb(h, xpath_first(xerr,NULL,"rpc-error"), cbret) < 0)
                 goto done;
             fprintf(stderr, "xml validation error: %s\n", cbuf_get(cbret));
             goto done;
@@ -372,7 +377,7 @@ main(int    argc,
             goto ok; // Parse errors returns OK
     }
 #endif
-    if (xpath_vec_ctx(x, nsc, xpath, 0, &xc) < 0)
+    if (xpath_vec_ctx(x, nsc, xpath, localonly, &xc) < 0)
         goto done;
 
     /* Check inverse, eg XML back to xpath and compare with original, only if nodes */
