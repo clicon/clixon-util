@@ -73,7 +73,7 @@ usage(char *argv0)
             "\t-p <xpath> \tPrimary XPath string\n"
             "\t-i <xpath0>\t(optional) Initial XPath string\n"
             "\t-I \t\tCheck inverse, map back xml result to xpath and check if equal\n"
-            "\t-n <pfx:id>\tNamespace binding (pfx=NULL for default)\n"
+            "\t-n <pfx:id>\tNamespace binding (pfx=null for default)\n"
             "\t-c \t\tMap xpath to canonical form\n"
             "\t-l <s|e|o|f<file>> \tLog on (s)yslog, std(e)rr, std(o)ut or (f)ile (stderr is default)\n"
             "\t-L \t\tLocalonly, ignore prefixes\n"
@@ -325,7 +325,7 @@ main(int    argc,
     /* Validate XML as well */
     if (yang_file_dir){
         /* Populate */
-        if ((ret = xml_bind_yang(h, x0, YB_MODULE, yspec, &xerr)) < 0)
+        if ((ret = xml_bind_yang(h, x0, YB_MODULE, yspec, 0, &xerr)) < 0)
             goto done;
         if (ret == 0){
             if ((cbret = cbuf_new()) ==NULL){
