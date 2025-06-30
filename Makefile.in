@@ -66,6 +66,7 @@ CPPFLAGS	+= $(INCLUDES)
 # Utilities, unit testings.
 APPSRC    = clixon_util_xml.c
 APPSRC   += clixon_util_xml_mod.c
+APPSRC   += clixon_util_xml_diff.c
 APPSRC   += clixon_util_json.c
 APPSRC   += clixon_util_yang.c
 APPSRC   += clixon_util_xpath.c
@@ -112,6 +113,9 @@ clixon_util_datastore: clixon_util_datastore.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ $(LIBS) -o $@
 
 clixon_util_xml_mod: clixon_util_xml_mod.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ $(LIBS) -o $@
+
+clixon_util_xml_diff: clixon_util_xml_diff.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -D__PROGRAM__=\"$@\" $(LDFLAGS) $^ $(LIBS) -o $@
 
 clixon_util_regexp: clixon_util_regexp.c
