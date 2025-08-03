@@ -85,9 +85,7 @@ main(int    argc,
     int                retval = -1;
     int                c;
     int                logdst = CLIXON_LOG_STDERR;
-    struct clicon_msg *msg = NULL;
     char              *sockpath = NULL;
-    char              *retdata = NULL;
     int                jsonin = 0;
     char              *input_filename = NULL;
     FILE              *fp = stdin;
@@ -97,6 +95,7 @@ main(int    argc,
     char              *family = "UNIX";
     int                ret;
     cbuf              *cb = cbuf_new();
+    cbuf              *cbrcv = NULL;
     clixon_handle      h;
     int                dbg = 0;
     int                s;
@@ -168,29 +167,27 @@ main(int    argc,
     }
     if (clixon_xml2cbuf(cb, xc, 0, 0, NULL, -1, 0) < 0)
         goto done;
-    if ((msg = clicon_msg_encode(getpid(), "%s", cbuf_get(cb))) < 0)
-        goto done;
     if (strcmp(family, "UNIX")==0){
-        if (clicon_rpc_connect_unix(h, sockpath, &s) < 0)
+        if (clixon_rpc_connect_unix(h, sockpath, &s) < 0)
             goto done;
     }
     else
-        if (clicon_rpc_connect_inet(h, sockpath, 4535, &s) < 0)
+        if (clixon_rpc_connect_inet(h, sockpath, 4535, &s) < 0)
             goto done;
-    if (clicon_rpc(s, NULL, msg, &retdata, &eof) < 0)
+    if (clixon_rpc11(s, NULL, cb, &cbrcv, &eof) < 0)
         goto done;
     close(s);
-    fprintf(stdout, "%s\n", retdata);
+    fprintf(stdout, "%s\n", cbuf_get(cbrcv));
     retval = 0;
  done:
+    if (cbrcv)
+        cbuf_free(cbrcv);
     if (fp)
         fclose(fp);
     if (xerr)
         xml_free(xerr);
     if (xt)
         xml_free(xt);
-    if (msg)
-        free(msg);
     if (cb)
         cbuf_free(cb);
     return retval;
