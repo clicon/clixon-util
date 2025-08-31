@@ -32,6 +32,10 @@
   ***** END LICENSE BLOCK *****
 
  * Compare XML trees
+ * Test uses three trees:
+ * x0 - Orig
+ * x1 - Candidate
+ * x2 - Running
  */
 
 #ifdef HAVE_CONFIG_H
@@ -302,7 +306,7 @@ main(int    argc,
     }
     else if (fnr == 3){
         conflict = 0;
-        if (xml_rebase_check(h, xts[0], xts[1], xts[2], &conflict) < 0)
+        if (xml_rebase(h, xts[0], xts[1], xts[2], &conflict, NULL, NULL) < 0)
             goto done;
         if (conflict == 0)
             fprintf(stdout, "ok\n");
