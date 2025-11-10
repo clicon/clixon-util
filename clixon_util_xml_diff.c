@@ -149,7 +149,7 @@ main(int    argc,
     int              i;
     int              conflict;
     int              ret;
-    
+
     /* Initialize clixon handle */
     if ((h = clixon_handle_init()) == NULL)
         goto done;
@@ -259,7 +259,7 @@ main(int    argc,
         }
         /* 3. Parse data according to format */
         switch (format_in){
-        case FORMAT_XML:    
+        case FORMAT_XML:
             if ((ret = clixon_xml_parse_file(fps[i],
                                              YB_MODULE,
                                              yspec,
@@ -287,7 +287,6 @@ main(int    argc,
             clixon_err(OE_XML, 0, "Unsupported format");
             goto done;
             break;
-            
         }
         if (ret == 0){
             clixon_err_netconf(h, OE_XML, 0, xerr, "util_xml");

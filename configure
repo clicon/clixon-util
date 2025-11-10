@@ -4528,13 +4528,18 @@ then :
 printf "%s\n" "#define STDC_HEADERS 1" >>confdefs.h
 
 fi
-ac_fn_c_check_header_compile "$LINENO" "curl/curl.h" "ac_cv_header_curl_curl_h" "$ac_includes_default"
+       for ac_header in curl/curl.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "curl/curl.h" "ac_cv_header_curl_curl_h" "$ac_includes_default"
 if test "x$ac_cv_header_curl_curl_h" = xyes
 then :
   printf "%s\n" "#define HAVE_CURL_CURL_H 1" >>confdefs.h
 
+else $as_nop
+  as_fn_error $? "curl missing" "$LINENO" 5
 fi
 
+done
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for curl_global_init in -lcurl" >&5
 printf %s "checking for curl_global_init in -lcurl... " >&6; }
 if test ${ac_cv_lib_curl_curl_global_init+y}

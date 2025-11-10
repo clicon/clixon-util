@@ -147,7 +147,7 @@ if test "${with_clixon}"; then
 fi
    
 # Check curl, needed for tests but not for clixon core
-AC_CHECK_HEADERS(curl/curl.h,[])
+AC_CHECK_HEADERS(curl/curl.h,[], AC_MSG_ERROR([curl missing]))
 AC_CHECK_LIB(curl, curl_global_init)
 
 AC_CHECK_HEADERS(nghttp2/nghttp2.h,[], AC_MSG_ERROR([nghttp2 missing]))
