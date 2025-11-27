@@ -92,7 +92,7 @@ usage(char *argv0)
  *(
 / * Make a CB() macro to generate simple callbacks that just prints the path and arg
  */
-#define CB(i) static int cb##i(void *h0, char *xpath, void *userargs, void *arg)    {  fprintf(stdout, "%s %s\n", __FUNCTION__, (char*)arg); return 0; }
+#define CB(i) static int cb##i(void *h0, const char *xpath, void *userargs, void *arg)    {  fprintf(stdout, "%s %s\n", __FUNCTION__, (char*)arg); return 0; }
 
 CB(1)
 CB(2)
