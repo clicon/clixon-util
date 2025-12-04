@@ -92,14 +92,15 @@ usage(char *argv0)
  *(
 / * Make a CB() macro to generate simple callbacks that just prints the path and arg
  */
-#if 1
-
-#define CB(i) static int cb##i(void *h0, char *xpath, void *userargs, void *arg)    {  fprintf(stdout, "%s %s\n", __FUNCTION__, (char*)arg); return 0; }
-
-#else
+// Backward-compatible 7.6
+#ifdef CLIXON_DISPATCHER_HANDLER_CONST
 
 /* Upcoming const char* modification in clixon 7.7 */
 #define CB(i) static int cb##i(void *h0, const char *xpath, void *userargs, void *arg)    {  fprintf(stdout, "%s %s\n", __FUNCTION__, (char*)arg); return 0; }
+
+#else
+
+#define CB(i) static int cb##i(void *h0, char *xpath, void *userargs, void *arg)    {  fprintf(stdout, "%s %s\n", __FUNCTION__, (char*)arg); return 0; }
 
 #endif
 
