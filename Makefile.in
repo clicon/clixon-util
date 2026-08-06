@@ -133,6 +133,12 @@ clixon_util_dispatcher: clixon_util_dispatcher.c
 clixon_util_stream: clixon_util_stream.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -lcurl -o $@
 
+clixon_netconf_ssh_callhome: clixon_netconf_ssh_callhome.c
+	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
+
+clixon_netconf_ssh_callhome_client: clixon_netconf_ssh_callhome_client.c
+	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
+
 clixon_restconf_callhome_client: clixon_restconf_callhome_client.c
 	$(CC) $(CPPFLAGS) -D__PROGRAM__=\"$@\" $(CFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
